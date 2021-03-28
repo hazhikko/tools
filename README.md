@@ -1,7 +1,8 @@
 # tools
 ツールいろいろごった煮リポジトリ
 ## VBScript
-### makeLink.vbs
+### [makeLink.vbs](VBScript/makeLink.vbs)
+ブログ：[相対パスでショートカットを作るコマンド作った](https://nekodeki.com/%e7%9b%b8%e5%af%be%e3%83%91%e3%82%b9%e3%81%a7%e3%82%b7%e3%83%a7%e3%83%bc%e3%83%88%e3%82%ab%e3%83%83%e3%83%88%e3%82%92%e4%bd%9c%e3%82%8b%e3%82%b3%e3%83%9e%e3%83%b3%e3%83%89%e4%bd%9c%e3%81%a3%e3%81%9f/)
 #### 機能
 ショートカットを相対パス指定で作成する
 #### 使い方
