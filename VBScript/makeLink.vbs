@@ -14,6 +14,13 @@ Const EXPLORER_PATH = "%windir%\explorer.exe"
 If CheckArguments() Then
     Dim targetFile   :targetFile   = WScript.Arguments(0)
     Dim directory   :directory   = WScript.Arguments(1)
+    ' 3つ目の引数に-fオプションが指定されていたらショートカット作成に絶対パスを使用する
+    Dim pathFlg: pathFlg = False
+    If Wscript.Arguments.Count >= 3 Then
+        If WScript.Arguments(2) = "-f" Then
+            pathFlg = True
+        End If
+    End if
 Else
     WScript.Echo MSG_ERR_01
     WScript.Quit
@@ -60,8 +67,6 @@ Sub MakeShortcut(targetFile, directory)
     ' 作成先を絶対パスにしておく
     directory = ConvertToFullPath(directory)
 
-    ' ショートカット元の相対パスを取得
-    Dim targetRelativePath: targetRelativePath = ConvertToRelativePath(directory, targetFile)
     ' ファイル名取得
     Set fso = createObject("Scripting.FileSystemObject")
     Dim targetFileName: targetFileName = fso.GetFileName(targetFile)
@@ -70,12 +75,24 @@ Sub MakeShortcut(targetFile, directory)
     ' ショートカット作成
     Set ws = CreateObject("WScript.Shell")
     Set shortcut = ws.CreateShortcut(directory & "\" & targetFileName & "-ショートカット.lnk")
-    With shortcut
-        .TargetPath = EXPLORER_PATH
-        .Arguments = """" & targetRelativePath & """"
-        .Save
-    End With
-    WScript.Echo "作成しました：" & directory & "\" & targetFileName & "-ショートカット.lnk"
+
+    ' ショートカットに使用するパスを取得・設定する
+    Dim targetPath
+    If pathFlg = False Then
+        targetPath = ConvertToRelativePath(directory, targetFile)
+        With shortcut
+            .TargetPath = EXPLORER_PATH
+            .Arguments = """" & targetPath & """"
+            .Save
+        End With
+    Else
+        targetPath = ConvertToFullPath(targetFile)
+        With shortcut
+            .TargetPath = targetPath
+            .Save
+        End With
+    End If
+    ' WScript.Echo "作成しました：" & directory & "\" & targetFileName & "-ショートカット.lnk"
 End Sub
 
 ' 相対パスへの変換
